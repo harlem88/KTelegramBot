@@ -31,6 +31,19 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile "com.google.code.gson:gson:2.7"
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'MainKt'
+    }
+
+    // This line of code recursively collects and copies all of a project's files
+    // and adds them to the JAR itself. One can extend this task, to skip certain
+    // files or particular types at will
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = "4.1"
 }
+
