@@ -49,8 +49,8 @@ fun onPushEvent(json : String){
     if (idChat != null) {
         println("send to $idChat")
         bot?.sendMessage(idChat!!, "" +
-                "PUSH => ${pushData?.repository?.name} by ${pushData?.commits?.get(0)?.author?.name} " +
-                " ref: ${pushData?.ref}"+
+                "PUSH => ${pushData?.repository?.name} by *${pushData?.commits?.get(0)?.author?.name}* \n" +
+                "ref: *${pushData?.ref}* \n"+
                 "${pushData?.commits?.get(0)?.url}")?.execute()
     }
 }
