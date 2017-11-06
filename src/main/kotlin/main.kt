@@ -28,7 +28,6 @@ fun main(args: Array<String>){
         println("New Event $event")
         if(event!= null && event.isNotEmpty()) {
             val json = ctx.body()
-            println("json $json")
             when (event) {
                 "create" ->  onCreateBranchEvent(json)
                 "delete" ->  onDeleteBranchEvent(json)
