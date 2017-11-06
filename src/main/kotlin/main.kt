@@ -13,9 +13,10 @@ var idChat: Long ? = null
 fun main(args: Array<String>){
     println("=========== STARt ===================")
     gson = Gson()
-    if(args.size > 2){
+    if(args.size > 1){
         token = args[0]
         idChat = args[1].toLong()
+        println(" chat id $idChat")
     }
 
     bot =  TelegramBot.create(token)
@@ -26,9 +27,8 @@ fun main(args: Array<String>){
         val event  = ctx.header("X-GitHub-Event")
         println("New Event $event")
         if(event!= null && event.isNotEmpty()) {
-
             val json = ctx.body()
-
+            println("json $json")
             when (event) {
                 "create" ->  onCreateBranchEvent(json)
                 "delete" ->  onDeleteBranchEvent(json)
@@ -48,8 +48,10 @@ fun main(args: Array<String>){
 fun onPushEvent(json : String){
     val pushData = gson?.fromJson(json, PushData::class.java)
     if (idChat != null) {
+        println("send to $idChat")
         bot?.sendMessage(idChat!!, "" +
                 "PUSH => ${pushData?.repository?.name} by ${pushData?.commits?.get(0)?.author?.name} " +
+                " ref: ${pushData?.ref}"+
                 "${pushData?.commits?.get(0)?.url}")?.execute()
     }
 }
