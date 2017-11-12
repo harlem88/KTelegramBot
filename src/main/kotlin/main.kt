@@ -1,5 +1,6 @@
 import com.google.gson.Gson
 import io.javalin.Javalin
+import org.dronix.ktelegramboot.ArduinoPixel
 import org.dronix.ktelegramboot.TelegramBot
 import org.dronix.ktelegramboot.model.github.PingData
 import org.dronix.ktelegramboot.model.github.PushData
@@ -7,11 +8,12 @@ import org.dronix.ktelegramboot.model.github.PushData
 
 var gson: Gson? = null
 var bot : TelegramBot?= null
+var arduino : ArduinoPixel ?= null
 var token: String? =null
 var idChat: Long ? = null
 
 fun main(args: Array<String>){
-    println("=========== STARt ===================")
+    println("=========== START ===================")
     gson = Gson()
     if(args.size > 1){
         token = args[0]
@@ -20,6 +22,8 @@ fun main(args: Array<String>){
     }
 
     bot =  TelegramBot.create(token)
+    arduino = ArduinoPixel.create("/dev/ttyACM0")
+
     val app = Javalin.start(16788)
 
     app.post("/payload"){ ctx ->
@@ -53,6 +57,7 @@ fun onPushEvent(json : String){
                 "ref: **${pushData?.ref}** \n"+
                 "${pushData?.commits?.get(0)?.url} \n")?.execute()
     }
+    arduino?.sendPushEvent(pushData?.commits?.get(0)?.author?.name, pushData?.ref)
 }
 
 fun onCreateBranchEvent(json : String){

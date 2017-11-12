@@ -54,5 +54,6 @@
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-xml:9.4.7.v20170914" level="project" />
     <orderEntry type="library" name="Gradle: org.eclipse.jetty:jetty-util:9.4.7.v20170914" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio:1.8.0" level="project" />
+    <orderEntry type="library" name="org.rxtx:rxtx:2.1.7" level="project" />
   </component>
 </module>
