@@ -53,9 +53,10 @@ fun onPushEvent(json : String){
     if (idChat != null) {
         println("send to $idChat")
         bot?.sendMessage(idChat!!, "" +
-                "*${pushData?.commits?.get(0)?.author?.name}* PUSHED on ${pushData?.repository?.name} \n" +
-                " branch : *${pushData?.ref?.split('/')?.get(2)}* \n"+
-                " ${pushData?.commits?.get(0)?.url} ", "markdown-style")?.execute()
+                "*${pushData?.commits?.get(0)?.author?.name}* \n" +
+                "PUSHED on :\n${pushData?.repository?.name} \n" +
+                "branch : *${pushData?.ref?.split('/')?.get(2)}* \n"+
+                "[inline URL](${pushData?.commits?.get(0)?.url})", "Markdown")?.execute()
     }
     arduino?.sendPushEvent(pushData?.commits?.get(0)?.author?.name, "${pushData?.repository?.name} => ${pushData?.ref?.split('/')?.get(2)}")
 }
