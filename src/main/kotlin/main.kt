@@ -53,11 +53,11 @@ fun onPushEvent(json : String){
     if (idChat != null) {
         println("send to $idChat")
         bot?.sendMessage(idChat!!, "" +
-                " **${pushData?.commits?.get(0)?.author?.name}** PUSHED on ${pushData?.repository?.name} \n" +
-                " branch : **${pushData?.ref?.split('/')?.get(2)}** \n"+
-                " ${pushData?.commits?.get(0)?.url} ")?.execute()
+                "*${pushData?.commits?.get(0)?.author?.name}* PUSHED on ${pushData?.repository?.name} \n" +
+                " branch : *${pushData?.ref?.split('/')?.get(2)}* \n"+
+                " ${pushData?.commits?.get(0)?.url} ", "markdown-style")?.execute()
     }
-    arduino?.sendPushEvent(pushData?.commits?.get(0)?.author?.name, pushData?.ref)
+    arduino?.sendPushEvent(pushData?.commits?.get(0)?.author?.name, "${pushData?.repository?.name} => ${pushData?.ref?.split('/')?.get(2)}")
 }
 
 fun onCreateBranchEvent(json : String){
