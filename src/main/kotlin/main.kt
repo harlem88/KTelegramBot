@@ -22,7 +22,7 @@ fun main(args: Array<String>){
     }
 
     bot =  TelegramBot.create(token)
-    arduino = ArduinoPixel.create("/dev/ttyACM0")
+    arduino = ArduinoPixel.create("/dev/ttyUSB0")
 
     val app = Javalin.start(16788)
 
@@ -45,6 +45,7 @@ fun main(args: Array<String>){
             }
         }
     }
+
 }
 
 
@@ -55,7 +56,7 @@ fun onPushEvent(json : String){
         bot?.sendMessage(idChat!!, "" +
                 "PUSH => ${pushData?.repository?.name} by **${pushData?.commits?.get(0)?.author?.name}** \n" +
                 "ref: **${pushData?.ref}** \n"+
-                "${pushData?.commits?.get(0)?.url} \n")?.execute()
+                " ${pushData?.commits?.get(0)?.url} ")?.execute()
     }
     arduino?.sendPushEvent(pushData?.commits?.get(0)?.author?.name, pushData?.ref)
 }
@@ -72,6 +73,6 @@ fun onPingEvent(json : String){
     val pingData = gson?.fromJson(json, PingData::class.java)
     println("PingData ${pingData?.hook_id}")
     if (idChat != null) {
-        bot?.sendMessage(idChat!!, "test ping${pingData?.hook_id}")?.execute()
+        bot?.sendMessage(idChat!!, "**test ping${pingData?.hook_id}** \n https://github.com/UDOOboard/udoo-iot-cloud-client/commit/ce830aa984bdc5b1cae9618f0ac5c32ac1f402b1 ")?.execute()
     }
 }
