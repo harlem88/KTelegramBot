@@ -22,7 +22,7 @@ fun main(args: Array<String>){
     }
 
     bot =  TelegramBot.create(token)
-    arduino = ArduinoPixel.create("/dev/ttyUSB0")
+    arduino = ArduinoPixel.create("/dev/ttyACM0")
 
     val app = Javalin.start(16788)
 
@@ -53,16 +53,16 @@ fun onPushEvent(json : String){
     if (idChat != null) {
         println("send to $idChat")
         bot?.sendMessage(idChat!!, "" +
-                "*${pushData?.commits?.get(0)?.author?.name}* \n" +
+                "*${pushData?.commits?.last()?.author?.name}* \n" +
                 "PUSHED on :\n" +
                 "*${pushData?.repository?.name}*\n" +
                 "branch :\n" +
                 "*${pushData?.ref?.split('/')?.get(2)}* \n"+
                 "message :\n" +
-                "*${pushData?.commits?.get(0)?.message}* \n"+
-                "[inline URL](${pushData?.commits?.get(0)?.url})", "Markdown")?.execute()
+                "*${pushData?.commits?.last()?.message}* \n"+
+                "[inline URL](${pushData?.commits?.last()?.url})", "Markdown")?.execute()
     }
-    arduino?.sendPushEvent(pushData?.commits?.get(0)?.author?.name, "${pushData?.repository?.name} => ${pushData?.ref?.split('/')?.get(2)}")
+    arduino?.sendPushEvent(pushData?.commits?.last()?.author?.name, "${pushData?.repository?.name} ${pushData?.ref?.split('/')?.get(2)}")
 }
 
 fun onCreateBranchEvent(json : String){

@@ -5,13 +5,6 @@ import gnu.io.CommPortIdentifier
 import gnu.io.SerialPort
 import org.dronix.ktelegramboot.model.arduino.EventModel
 import java.io.OutputStream
-import java.util.Enumeration
-import com.sun.xml.internal.ws.streaming.XMLStreamWriterUtil.getOutputStream
-import java.io.PrintStream
-
-
-
-
 
 class ArduinoPixel internal constructor(
         serviceProvider: ArduinoPixelService
