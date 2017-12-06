@@ -13,7 +13,7 @@ class ArduinoPixel internal constructor(
         @JvmStatic
         fun create(portName: String?): ArduinoPixel {
             val aa = ArduinoPixelServiceImpl()
-
+            System.setProperty("gnu.io.rxtx.SerialPorts", "/dev/ttyACM0")
             val results = CommPortIdentifier.getPortIdentifiers().toList().filter { (it as CommPortIdentifier).name == portName  }
 
             if (results.isNotEmpty()) {

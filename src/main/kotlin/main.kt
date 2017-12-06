@@ -62,7 +62,11 @@ fun onPushEvent(json : String){
                 "*${pushData?.commits?.last()?.message}* \n"+
                 "[inline URL](${pushData?.commits?.last()?.url})", "Markdown")?.execute()
     }
-    arduino?.sendPushEvent(pushData?.commits?.last()?.author?.name, "${pushData?.repository?.name} ${pushData?.ref?.split('/')?.get(2)}")
+    runSound()
+    Thread {
+        Thread.sleep(15000)
+        arduino?.sendPushEvent(pushData?.commits?.last()?.author?.name, "${pushData?.repository?.name} ${pushData?.ref?.split('/')?.get(2)}")
+    }
 }
 
 fun onCreateBranchEvent(json : String){
@@ -78,5 +82,11 @@ fun onPingEvent(json : String){
     println("PingData ${pingData?.hook_id}")
     if (idChat != null) {
         bot?.sendMessage(idChat!!, "**test ping${pingData?.hook_id}** \n https://github.com/UDOOboard/udoo-iot-cloud-client/commit/ce830aa984bdc5b1cae9618f0ac5c32ac1f402b1 ")?.execute()
+    }
+}
+
+fun runSound(){
+    Thread{
+        Runtime.getRuntime().exec("ffplay sound1.mp3")
     }
 }
