@@ -64,9 +64,9 @@ fun onPushEvent(json : String){
     }
     runSound()
     Thread {
-        Thread.sleep(15000)
+        Thread.sleep(2000)
         arduino?.sendPushEvent(pushData?.commits?.last()?.author?.name, "${pushData?.repository?.name} ${pushData?.ref?.split('/')?.get(2)}")
-    }
+    }.start()
 }
 
 fun onCreateBranchEvent(json : String){
@@ -88,5 +88,5 @@ fun onPingEvent(json : String){
 fun runSound(){
     Thread{
         Runtime.getRuntime().exec("ffplay sound1.mp3")
-    }
+    }.start()
 }
