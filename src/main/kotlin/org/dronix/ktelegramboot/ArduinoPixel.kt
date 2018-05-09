@@ -42,6 +42,15 @@ class ArduinoPixel internal constructor(
 
 
     class ArduinoPixelServiceImpl : ArduinoPixelService {
+        override fun sendEvent(name: String) {
+            val event =  EventModel(name, "", "")
+            Thread{
+                val json = Gson().toJson(event) + "\n"
+                println(json)
+                writeData(json)
+            }.start()
+        }
+
         var out: OutputStream? = null
 
 

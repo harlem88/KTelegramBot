@@ -45,6 +45,11 @@ fun main(args: Array<String>){
             }
         }
     }
+
+    app.get("/labraceaccesa"){ ctx ->
+
+        onBraceEvent("test")
+    }
 }
 
 
@@ -66,6 +71,13 @@ fun onPushEvent(json : String){
     Thread {
         Thread.sleep(2000)
         arduino?.sendPushEvent(pushData?.commits?.last()?.author?.name, "${pushData?.repository?.name} ${pushData?.ref?.split('/')?.get(2)}")
+    }.start()
+}
+
+fun onBraceEvent(name : String){
+    Thread {
+        Thread.sleep(2000)
+        arduino?.sendEvent(name)
     }.start()
 }
 
