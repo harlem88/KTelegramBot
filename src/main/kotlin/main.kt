@@ -62,11 +62,11 @@ fun onPushEvent(json : String){
                 "*${pushData?.commits?.last()?.message}* \n"+
                 "[inline URL](${pushData?.commits?.last()?.url})", "Markdown")?.execute()
     }
-    runSound()
+    runSound(pushData?.commits?.last()?.author?.name)
     Thread {
-        Thread.sleep(15000)
+        Thread.sleep(2000)
         arduino?.sendPushEvent(pushData?.commits?.last()?.author?.name, "${pushData?.repository?.name} ${pushData?.ref?.split('/')?.get(2)}")
-    }
+    }.start()
 }
 
 fun onCreateBranchEvent(json : String){
@@ -85,8 +85,12 @@ fun onPingEvent(json : String){
     }
 }
 
-fun runSound(){
+fun runSound(user : String?){
     Thread{
-        Runtime.getRuntime().exec("ffplay sound1.mp3")
-    }
+        if (user != null && user.equals("Alessandro Genovese", true)) {
+            Runtime.getRuntime().exec("mpg123 -q /home/udoo/code/KTelegramBot/soundGeno.mp3")
+        } else {
+            Runtime.getRuntime().exec("mpg123 -q /home/udoo/code/KTelegramBot/sound1.mp3")
+        }
+    }.start()
 }
