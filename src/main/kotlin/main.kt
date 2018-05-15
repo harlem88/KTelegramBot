@@ -1,14 +1,19 @@
 import com.google.gson.Gson
 import io.javalin.Javalin
+import jssc.SerialPortList
 import org.dronix.ktelegramboot.ArduinoPixel
+import org.dronix.ktelegramboot.ArduinoService
 import org.dronix.ktelegramboot.TelegramBot
+import org.dronix.ktelegramboot.model.PortModel
 import org.dronix.ktelegramboot.model.github.PingData
 import org.dronix.ktelegramboot.model.github.PushData
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 
 var gson: Gson? = null
 var bot : TelegramBot?= null
-var arduino : ArduinoPixel ?= null
+var arduino : ArduinoService?= null
 var token: String? =null
 var idChat: Long ? = null
 
@@ -22,7 +27,7 @@ fun main(args: Array<String>){
     }
 
     bot =  TelegramBot.create(token)
-    arduino = ArduinoPixel.create("/dev/ttyACM0")
+    detectSerial()
 
     val app = Javalin.start(16788)
 
@@ -50,6 +55,22 @@ fun main(args: Array<String>){
 
         onBraceEvent("test")
     }
+}
+
+fun detectSerial() {
+
+    val ports = getPorts()
+
+    for ((name, vendorId) in ports) {
+        when (vendorId) {
+            "8087" ->  {
+                arduino = ArduinoService(name)
+                arduino?.setup()
+            }
+        }
+    }
+
+    addShutdownListener()
 }
 
 
@@ -105,4 +126,51 @@ fun runSound(user : String?){
             Runtime.getRuntime().exec("mpg123 -q /home/udoo/code/KTelegramBot/sound1.mp3")
         }
     }.start()
+}
+
+fun addShutdownListener(){
+    Runtime.getRuntime().addShutdownHook(object : Thread() {
+        override fun run() {
+            println("Closing serial port")
+            arduino?.close()
+        }
+    })
+}
+
+fun getPorts() : List<PortModel> {
+    val ports = ArrayList<PortModel>()
+    val portNames = SerialPortList.getPortNames()
+    for (name in portNames) {
+        try {
+            val rt = Runtime.getRuntime()
+            val proc = rt.exec("udevadm info --query=property $name")
+
+            var line: String?
+            val br = BufferedReader(InputStreamReader(proc.inputStream))
+            line = br.readLine()
+
+            var productId  : String?=null
+            var vendorId : String?=null
+
+            while (line != null) {
+                if(line.startsWith("ID_MODEL_ID=")){
+                    productId = line.split("ID_MODEL_ID=")[1]
+                }else if(line.startsWith("ID_VENDOR_ID=")){
+                    vendorId = line.split("ID_VENDOR_ID=")[1]
+                }
+                line = br.readLine()
+            }
+
+            br.close()
+
+            if(productId != null && vendorId != null){
+                ports.add(PortModel(name, vendorId, productId))
+            }
+        } catch (t: Throwable) {}
+
+        if(ports.filter { it.vendorId == "8087" }.count() <= 0){
+            ports.add(PortModel("/dev/ttyACM0", "8087", ""))
+        }
+    }
+    return ports
 }
